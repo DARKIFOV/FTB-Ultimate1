@@ -1,0 +1,12 @@
+pluginManagement {
+	repositories {
+		gradlePluginPortal()
+		mavenCentral()
+		maven {
+			name = 'GTNH'
+			url = uri('https://nexus.gtnewhorizons.com/repository/public/')
+		}
+	}
+}
+
+rootProject.name = 'FTBUltimine-1.7.10'
