@@ -1,0 +1,17 @@
+[
+	{
+		"modid": "ftbultimine",
+		"name": "FTB Ultimine",
+		"description": "Hold a key to mine/chop/dig many blocks at once. Backport to Minecraft 1.7.10 Forge.",
+		"version": "${version}",
+		"mcversion": "${mcversion}",
+		"url": "",
+		"updateUrl": "",
+		"authorList": ["LatvianModder", "1.7.10 backport"],
+		"credits": "Original mod by LatvianModder / FTB Team",
+		"logoFile": "",
+		"screenshots": [],
+		"parent": "",
+		"dependencies": []
+	}
+]
