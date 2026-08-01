@@ -1,0 +1,52 @@
+name: Build Extreme Auto Crafter 1.20.1
+
+on:
+  push:
+    paths:
+      - 'extreme-auto-crafter/**'
+      - '.github/workflows/build-extreme-auto-crafter.yml'
+  pull_request:
+    paths:
+      - 'extreme-auto-crafter/**'
+      - '.github/workflows/build-extreme-auto-crafter.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Restore source archive
+        shell: bash
+        run: |
+          cat extreme-auto-crafter/source/source.b64.part* | base64 --decode > ExtremeAutoCrafter-1.20.1-sources.zip
+          echo "763a3244e96002e42730b6ff5caa3738f1e1c8d2c59309b3b8914fb28fb306e8  ExtremeAutoCrafter-1.20.1-sources.zip" | sha256sum --check
+          unzip -q ExtremeAutoCrafter-1.20.1-sources.zip
+
+      - name: Set up Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Set up Gradle 8.8
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.8'
+
+      - name: Build mod
+        working-directory: extreme_auto_crafter
+        run: gradle clean build --no-daemon --stacktrace
+
+      - name: Upload compiled mod
+        uses: actions/upload-artifact@v4
+        with:
+          name: ExtremeAutoCrafter-1.20.1
+          path: extreme_auto_crafter/build/libs/*.jar
+          if-no-files-found: error
