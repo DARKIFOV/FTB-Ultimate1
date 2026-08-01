@@ -25,7 +25,16 @@ jobs:
       - name: Restore source archive
         shell: bash
         run: |
-          cat extreme-auto-crafter/source/source.b64.part* | base64 --decode > ExtremeAutoCrafter-1.20.1-sources.zip
+          cat \
+            extreme-auto-crafter/source/source.b64.p0.0 \
+            extreme-auto-crafter/source/source.b64.p0.1 \
+            extreme-auto-crafter/source/source.b64.p0.2 \
+            extreme-auto-crafter/source/source.b64.p0.3 \
+            extreme-auto-crafter/source/source.b64.part1 \
+            extreme-auto-crafter/source/source.b64.part2 \
+            extreme-auto-crafter/source/source.b64.part3 \
+            extreme-auto-crafter/source/source.b64.part4 \
+            | base64 --decode > ExtremeAutoCrafter-1.20.1-sources.zip
           echo "763a3244e96002e42730b6ff5caa3738f1e1c8d2c59309b3b8914fb28fb306e8  ExtremeAutoCrafter-1.20.1-sources.zip" | sha256sum --check
           unzip -q ExtremeAutoCrafter-1.20.1-sources.zip
 
