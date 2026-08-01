@@ -1,0 +1,10 @@
+--- extreme_auto_crafter/src/main/java/com/darkifov/extremeautocrafter/recipe/ExtremeRecipeEngine.java
++++ extreme_auto_crafter/src/main/java/com/darkifov/extremeautocrafter/recipe/ExtremeRecipeEngine.java
+@@ -29,7 +29,7 @@
+ public final class ExtremeRecipeEngine {
+     private static final ResourceLocation EXTREME_SMITHING_TYPE =
+-            new ResourceLocation("avaritia", "extreme_smithing");
++            new ResourceLocation("avaritia", "extreme_smithing_recipe");
+ 
+     private ExtremeRecipeEngine() {
+     }
