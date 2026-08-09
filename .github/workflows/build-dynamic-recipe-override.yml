@@ -1,8 +1,8 @@
-name: Build Dynamic Recipe Override 3.1.0
+name: Build Dynamic Recipe Override 3.2.0
 
 on:
   push:
-    branches: [ dro-build-3.1.0-ci ]
+    branches: [ dro-build-3.2.0-ci2 ]
     paths:
       - 'dro-build/**'
       - '.github/workflows/build-dynamic-recipe-override.yml'
@@ -18,7 +18,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Restore Dynamic Recipe Override sources
+      - name: Restore Dynamic Recipe Override 3.2.0 sources
         shell: bash
         run: |
           cat dro-build/source.txz.b64.* | base64 --decode > /tmp/dro-src.tar.xz
@@ -27,23 +27,19 @@ jobs:
           mkdir -p /tmp/dro-src
           tar -xJf /tmp/dro-src.tar.xz -C /tmp/dro-src
           test -f /tmp/dro-src/build.gradle
+
           cat dro-build/v31.patch.b64.* | base64 --decode | gzip -dc > /tmp/dro-v31.patch
           cd /tmp/dro-src
           patch -p1 < /tmp/dro-v31.patch
           grep '^mod_version=3.1.0$' gradle.properties
 
-      - name: Package reconstructed 3.1.0 sources
-        shell: bash
-        run: |
+          cd "$GITHUB_WORKSPACE"
+          cat dro-build/v32.patch.b64.* | base64 --decode > /tmp/dro-v32.patch.gz
+          echo "2af2a1b81a5cbf40afb2655c4825ebccc0b7b3f8ca73a15d83ffaaa9bf0eed9a  /tmp/dro-v32.patch.gz" | sha256sum --check
+          gzip -dc /tmp/dro-v32.patch.gz > /tmp/dro-v32.patch
           cd /tmp/dro-src
-          zip -qr /tmp/DynamicRecipeOverride-1.20.1-3.1.0-sources.zip . -x 'build/*' '.gradle/*'
-
-      - name: Upload reconstructed sources
-        uses: actions/upload-artifact@v4
-        with:
-          name: DynamicRecipeOverride-1.20.1-3.1.0-sources
-          path: /tmp/DynamicRecipeOverride-1.20.1-3.1.0-sources.zip
-          if-no-files-found: error
+          patch -p1 < /tmp/dro-v32.patch
+          grep '^mod_version=3.2.0$' gradle.properties
 
       - name: Set up Java 17
         uses: actions/setup-java@v4
@@ -60,6 +56,18 @@ jobs:
         working-directory: /tmp/dro-src
         run: gradle clean build --no-daemon --stacktrace
 
+      - name: Inspect compiled jar
+        if: success()
+        shell: bash
+        run: |
+          JAR=$(find /tmp/dro-src/build/libs -maxdepth 1 -name '*.jar' | head -1)
+          test -n "$JAR"
+          jar tf "$JAR" | grep 'dev/dynamicrecipeoverride/compat/jei/DroJeiPlugin.class'
+          jar tf "$JAR" | grep 'dev/dynamicrecipeoverride/client/JeiRuntimeBridge.class'
+          jar tf "$JAR" | grep 'dev/dynamicrecipeoverride/compat/DraconicFusionCompat.class'
+          unzip -p "$JAR" META-INF/mods.toml | grep '3.2.0'
+          sha256sum "$JAR"
+
       - name: Collect compiled jars
         if: success()
         shell: bash
@@ -72,6 +80,6 @@ jobs:
         if: success()
         uses: actions/upload-artifact@v4
         with:
-          name: DynamicRecipeOverride-1.20.1-3.1.0
+          name: DynamicRecipeOverride-1.20.1-3.2.0
           path: /tmp/dro-artifact/*.jar
           if-no-files-found: error
