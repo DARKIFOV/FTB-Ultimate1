@@ -41,7 +41,7 @@ jobs:
 
           cd "$GITHUB_WORKSPACE"
           cat dro-build/v33.patch.b64.* | base64 --decode > /tmp/dro-v33.patch.gz
-          echo "affee734e5a84fe239a7098647c4d0a60254fbe3b63dbde1867efee467c47c72  /tmp/dro-v33.patch.gz" | sha256sum --check
+          echo "228916a63d90ceec203398440c37fc3069d2e93995bdaf3f36ed794aac7c3f2d  /tmp/dro-v33.patch.gz" | sha256sum --check
           gzip -dc /tmp/dro-v33.patch.gz > /tmp/dro-v33.patch
           cd /tmp/dro-src
           patch -p1 < /tmp/dro-v33.patch
